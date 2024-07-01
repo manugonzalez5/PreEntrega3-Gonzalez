@@ -24,7 +24,7 @@ function convertir() {
     let opcion = prompt('¿Queres operación desea simular? \n 1) Convertir AR$ a BTC \n 2) Convertir BTC a AR$ \n 3) Convertir AR$ a ETH \n 4) Convertir ETH a AR$ \n 5) Salir \n Ingrese 1, 2, 3 o 4 para avanzar.');
 
     if (opcion === '1') {
-        let pesos = parseFloat(prompt('Ingrese la cantidad de pesos argentinos que desea convertir en BTC:'))
+        let pesos = parseFloat(prompt('Ingrese la cantidad de AR$ que desea convertir en BTC (ingrese el valor sin puntos ni comas):'))
         if (isNaN(pesos) || pesos <= 0) {
             alert('Por favor ingrese un valor númerico válido.');
         } else {
@@ -33,7 +33,7 @@ function convertir() {
             alert('Muchas gracias por usar nuestro simulador!');
         }
     } else if (opcion === '2') {
-        let bitcoin = parseFloat(prompt('Ingrese la cantidad de BTC que desea convertir en pesos argentinos:'))
+        let bitcoin = parseFloat(prompt('Ingrese la cantidad de BTC que desea convertir en AR$ (ingrese el valor sin puntos ni comas):'))
         if (isNaN(bitcoin) || bitcoin <= 0) {
             alert('Por favor ingrese un valor númerico válido.');
         } else {
@@ -42,7 +42,7 @@ function convertir() {
             alert('Muchas gracias por usar nuestro simulador!');
         }
     } else if (opcion === '3') {
-        let pesos = parseFloat(prompt('Ingrese la cantidad de pesos argentinos que desea convertir en ETH:'))
+        let pesos = parseFloat(prompt('Ingrese la cantidad de AR$ que desea convertir en ETH (ingrese el valor sin puntos ni comas):'))
         if (isNaN(pesos) || pesos <= 0) {
             alert('Por favor ingrese un valor númerico válido.');
         } else {
@@ -51,7 +51,7 @@ function convertir() {
             alert('Muchas gracias por usar nuestro simulador!');
         }
     } else if (opcion === '4') {
-        let ethereum = parseFloat(prompt('Ingrese la cantidad de ETH que desea convertir en pesos argentinos:'))
+        let ethereum = parseFloat(prompt('Ingrese la cantidad de ETH que desea convertir en AR$ (ingrese el valor sin puntos ni comas):'))
         if (isNaN(ethereum) || ethereum <= 0) {
             alert('Por favor ingrese un valor númerico válido.');
         } else {
