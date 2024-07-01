@@ -55,10 +55,7 @@ function convertir() {
             let pesos = ethereumAPesos(ethereum, tasaCambioEth);
             alert(`El equivalente en pesos argentinos de ETH ${formatearDecimal(ethereum)} es AR$${formatearDecimal(pesos)}`);
         }
-    } if (opcion === '5') {
-    alert('Muchas gracias por usar nuestro simulador!');
-    } 
-    else if (opcion !== '1' && opcion !== '2' && opcion !== '3' && opcion !== '4' && opcion !== '5') {
+    } else if (opcion !== '1' && opcion !== '2' && opcion !== '3' && opcion !== '4' && opcion !== '5') {
     alert('Por favor ingrese una opción correcta.');
     }
     while (true) {
@@ -76,6 +73,7 @@ function convertir() {
         alert("Muchas gracias por usar nuestro simulador!");
         break;
     }
-} 
+
+}
 
 convertir();
