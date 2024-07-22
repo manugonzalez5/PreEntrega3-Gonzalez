@@ -27,35 +27,27 @@ if (tipo == "numero") {
 return dato;
 }
 
-let salir = false;
-while (!salir) {
-let opcion = parseInt(prompt(menu_str));
-switch (opcion) {
-    case 0:
+while (true) {
+    let opcion = Number(prompt(menu_str));
+    
+    if (opcion === 0) {
         alert("Hasta luego, muchas gracias. Para volver a ejecutar recarga la pagina");
-        salir = true;
-        break;
-    case 1:
+        break; 
+    } else if (opcion === 1) {
         mostrarTabla(productos);
-        break;
-    case 2:
+    } else if (opcion === 2) {
         sistema_stock.nuevoProducto();
         mostrarTabla(productos);
-        break;
-    case 3:
+    } else if (opcion === 3) {
         filtrarProductos(productos);
-        break;
-    case 4:
+    } else if (opcion === 4) {
         incrementarPrecios(productos);
         mostrarTabla(productos);
-        break;
-    case 5:
-        producto = buscarId(productos);
+    } else if (opcion === 5) {
+        const producto = buscarId(productos);
         editarProducto(producto);
         mostrarTabla(productos);
-        break;
-    default:
+    } else {
         alert("Opción inexistente. Intente nuevamente.");
-        break;
-}
+    }
 }
