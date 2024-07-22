@@ -2,7 +2,7 @@
 let set_id = 1
 
 class Producto {
-    constructor(nombre, precio, rubro = ''){
+    constructor(nombre, precio, rubro = '') {
         this.nombre = nombre;
         this.precio = precio;
         this.rubro = rubro;
