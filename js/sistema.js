@@ -13,7 +13,7 @@ class Sistema {
         this.productos.push(new Producto(nombre, precio, rubro));
     }
 }
-
+g
 function mostrarTabla(datos) {
     let tablita = document.querySelector('#tabla-productos')
 
@@ -33,6 +33,9 @@ function mostrarTabla(datos) {
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Stock
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Accion
                 </th>
             </tr>
         </thead>
@@ -58,6 +61,7 @@ function mostrarTabla(datos) {
                 <td class="px-6 py-4">
                     ${producto.stock}
                 </td>
+                <td><button class="bg-red-500 text-white p-1 rounded" onclick="eliminarProducto(${producto.id})">Eliminar</button></td>
             </tr>
         `
     }))
