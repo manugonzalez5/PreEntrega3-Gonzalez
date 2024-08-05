@@ -16,6 +16,12 @@ class Producto {
     }
 }
 
+let productos = [
+    new Producto('Logitech G PRO X Superlight', 250000, 'Periferico'),
+    new Producto('Zowie EC2-A White Edition', 100000, 'Periferico'),
+    new Producto('Steelseries QCK Heavy', 50000, 'Accesorio'),
+]
+
 function cargarProductos() {
     const productosGuardados = localStorage.getItem("productos");
     if (productosGuardados) {

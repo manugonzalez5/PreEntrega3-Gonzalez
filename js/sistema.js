@@ -13,7 +13,6 @@ class Sistema {
         this.productos.push(new Producto(nombre, precio, rubro));
     }
 }
-g
 function mostrarTabla(datos) {
     let tablita = document.querySelector('#tabla-productos')
 
