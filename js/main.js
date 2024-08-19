@@ -52,34 +52,75 @@ agregarProducto.addEventListener("click", () => {
     mostrarTabla(inventario);
 });
 
+// buscarProducto.addEventListener("click", () => {
+//     let formulario = document.querySelector("#form");
+
+//     formulario.innerHTML = `<input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Nombre de producto" type="text" id="nombre" />
+// <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitProducto">Buscar Producto</button>`;
+
+//     document.querySelector("#submitProducto").addEventListener("click", (event) => {
+//         event.preventDefault();
+
+//         let nombre = document.querySelector("#nombre").value;
+//         if (nombre) {
+//             let productoExiste = inventario.some(
+//                 (producto) => producto.nombre === nombre
+//             );
+//             if (!productoExiste) {
+//                 alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">${nombre} no existe!</p>`;
+//             } else {
+//                 alerta.innerHTML = `<p class="w-full h-full bg-green-300 p-4">${nombre} existe!</p>`;
+//             }
+//         } else {
+//             alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Por favor completa el campo "Nombre de producto"</p>`;
+//         }
+//         setTimeout(() => {
+//             alerta.innerHTML = "";
+//         }, 3000);
+//     });
+//     mostrarTabla(inventario);
+// });
+
 buscarProducto.addEventListener("click", () => {
     let formulario = document.querySelector("#form");
 
-    formulario.innerHTML = `<input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Nombre de producto" type="text" id="nombre" />
-<button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitProducto">Buscar Producto</button>`;
+    formulario.innerHTML = `
+        <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Nombre del rubro" type="text" id="rubro" />
+        <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitRubro">Buscar Rubro</button>
+    `;
 
-    document.querySelector("#submitProducto").addEventListener("click", (event) => {
+    document.querySelector("#submitRubro").addEventListener("click", (event) => {
         event.preventDefault();
 
-        let nombre = document.querySelector("#nombre").value;
-        if (nombre) {
-            let productoExiste = inventario.some(
-                (producto) => producto.nombre === nombre
+        let rubro = document.querySelector("#rubro").value.toLowerCase(); 
+        let alerta = document.querySelector("#alerta"); 
+        
+        if (rubro) {
+            let productosCoincidentes = inventario.filter(
+                (producto) => producto.rubro.toLowerCase().includes(rubro)
             );
-            if (!productoExiste) {
-                alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">${nombre} no existe!</p>`;
+
+            if (productosCoincidentes.length > 0) {
+                let mensaje = `<p class="w-full h-full bg-green-300 p-4">Se encontraron los siguientes productos:</p>`;
+                productosCoincidentes.forEach((producto) => {
+                    mensaje += `<p class="w-full h-full">${producto.nombre} - ${producto.rubro}</p>`;
+                });
+                alerta.innerHTML = mensaje;
             } else {
-                alerta.innerHTML = `<p class="w-full h-full bg-green-300 p-4">${nombre} existe!</p>`;
+                alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">No se encontraron productos en el rubro "${rubro}".</p>`;
             }
         } else {
-            alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Por favor completa el campo "Nombre de producto"</p>`;
+            alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Por favor completa el campo "Nombre del rubro"</p>`;
         }
+
         setTimeout(() => {
             alerta.innerHTML = "";
         }, 3000);
     });
+
     mostrarTabla(inventario);
 });
+
 
 incrementarPrecioss.addEventListener("click", () => {
     let formulario = document.querySelector("#form");
