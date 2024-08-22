@@ -1,3 +1,14 @@
 * {
     box-sizing: border-box;
 }
+
+
+h1 {
+    font-size: 2em; /* Tamaño del texto */
+    color: #333; /* Color del texto */
+    font-family: Arial, sans-serif; /* Fuente del texto */
+    text-align: center; /* Centra el título horizontalmente */
+    margin: 20px 0; /* Espaciado vertical alrededor del título */
+}
+
+

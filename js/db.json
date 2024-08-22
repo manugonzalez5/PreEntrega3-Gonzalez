@@ -1,0 +1,23 @@
+[
+    {
+        "nombre": "Logitech G PRO X Superlight",
+        "precio": 250000,
+        "rubro": "Periferico",
+        "id": 1,
+        "stock": 12
+    },
+    {
+        "nombre": "Zowie EC2-A White Edition",
+        "precio": 100000,
+        "rubro": "Periferico",
+        "id": 2,
+        "stock": 9
+    },
+    {
+        "nombre": "Steelseries QCK Heavy",
+        "precio": 50000,
+        "rubro": "Accesorio",
+        "id": 3,
+        "stock": 13
+    }
+]

@@ -1,18 +1,22 @@
-let inventario = cargarProductos();
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM completamente cargado");
+    cargarProductosDesdeDB(); 
+});
 
 let listProductos = document.querySelector("#listar-productos");
 let agregarProducto = document.querySelector("#agregar-producto");
 let buscarProducto = document.querySelector("#buscar-producto");
 let incrementarPrecioss = document.querySelector("#incrementar-producto");
 let editarProductoss = document.querySelector("#editar-producto");
+let filtrarRubro = document.querySelector("#filtrar-rubro");
+
 
 listProductos.addEventListener("click", () => {
     let formulario = document.querySelector("#form");
     formulario.innerHTML = "";
-    mostrarTabla(inventario);
+    mostrarTabla(inventarioStock);
 });
 
-let alerta = document.querySelector("#alert");
 
 agregarProducto.addEventListener("click", () => {
     let formulario = document.querySelector("#form");
@@ -20,7 +24,7 @@ agregarProducto.addEventListener("click", () => {
     formulario.innerHTML = `<input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1 md:col-span-2" placeholder="Nombre de producto" type="text" id="nombre" />
 <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Rubro de producto" type="text" id="rubro" />
 <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Precio de producto" type="number" id="precio" />
-<button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitProducto">Agregar Producto</button>`;
+<button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitProducto">➕ Agregar Producto</button>`;
 
     document.querySelector("#submitProducto").addEventListener("click", (event) => {
         event.preventDefault();
@@ -29,97 +33,108 @@ agregarProducto.addEventListener("click", () => {
         let precio = document.querySelector("#precio").value;
         let rubro = document.querySelector("#rubro").value;
         if (nombre && rubro && precio) {
-            let productoExiste = inventario.some(
+            let productoExiste = inventarioStock.some(
                 (producto) => producto.nombre === nombre
             );
             if (!productoExiste) {
                 let nuevoProducto = new Producto(nombre, parseFloat(precio), rubro);
-                inventario.push(nuevoProducto);
+                inventarioStock.push(nuevoProducto);
                 guardarProductos();
-                mostrarTabla(inventario);
+                mostrarTabla(inventarioStock);
                 formulario.reset();
-                alerta.innerHTML = `<p class="w-full h-full bg-green-300 p-4">${nombre} agregado con exito!</p>`;
+                Toastify({
+                    text: "✅ Producto agregado con exito.",
+                    className: "info",
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }
+                }).showToast();
             } else {
-                alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">${nombre} ya existe!</p>`;
+                Toastify({
+                    text: "❌ Producto existente",
+                    className: "info",
+                    style: {
+                        background: "linear-gradient(to right, rgb(255, 95, 109), rgb(255, 195, 113))",
+                    }
+                }).showToast();
             }
         } else {
-            alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Por favor completa los campos</p>`;
+            Toastify({
+                text: "⚠️ Completa los campos porfavor.",
+                className: "info",
+                style: {
+                    background: "linear-gradient(to right, #f1c40f, rgb(255, 195, 113))",
+                }
+            }).showToast();
         }
-        setTimeout(() => {
-            alerta.innerHTML = "";
-        }, 3000);
     });
-    mostrarTabla(inventario);
+    mostrarTabla(inventarioStock);
+
 });
-
-// buscarProducto.addEventListener("click", () => {
-//     let formulario = document.querySelector("#form");
-
-//     formulario.innerHTML = `<input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Nombre de producto" type="text" id="nombre" />
-// <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitProducto">Buscar Producto</button>`;
-
-//     document.querySelector("#submitProducto").addEventListener("click", (event) => {
-//         event.preventDefault();
-
-//         let nombre = document.querySelector("#nombre").value;
-//         if (nombre) {
-//             let productoExiste = inventario.some(
-//                 (producto) => producto.nombre === nombre
-//             );
-//             if (!productoExiste) {
-//                 alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">${nombre} no existe!</p>`;
-//             } else {
-//                 alerta.innerHTML = `<p class="w-full h-full bg-green-300 p-4">${nombre} existe!</p>`;
-//             }
-//         } else {
-//             alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Por favor completa el campo "Nombre de producto"</p>`;
-//         }
-//         setTimeout(() => {
-//             alerta.innerHTML = "";
-//         }, 3000);
-//     });
-//     mostrarTabla(inventario);
-// });
 
 buscarProducto.addEventListener("click", () => {
     let formulario = document.querySelector("#form");
 
     formulario.innerHTML = `
-        <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Nombre del rubro" type="text" id="rubro" />
-        <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitRubro">Buscar Rubro</button>
-    `;
+        <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Nombre de producto" type="text" id="nombre" />
+        <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitProducto">🔍 Buscar Producto</button>
+        <button type="button" class="p-2 text-center bg-gray-600 text-white col-start-1 md:col-start-2 hover:bg-gray-900 self-end" id="limpiarFiltrosProducto">🔄️ Limpiar Filtros</button>`;
 
-    document.querySelector("#submitRubro").addEventListener("click", (event) => {
+    document.querySelector("#submitProducto").addEventListener("click", (event) => {
         event.preventDefault();
 
-        let rubro = document.querySelector("#rubro").value.toLowerCase(); 
-        let alerta = document.querySelector("#alerta"); 
-        
-        if (rubro) {
-            let productosCoincidentes = inventario.filter(
-                (producto) => producto.rubro.toLowerCase().includes(rubro)
+        let nombre = document.querySelector("#nombre").value.trim();
+        if (nombre) {
+
+            let productosFiltrados = inventarioStock.filter(
+                (producto) => producto.nombre.includes(nombre)
             );
 
-            if (productosCoincidentes.length > 0) {
-                let mensaje = `<p class="w-full h-full bg-green-300 p-4">Se encontraron los siguientes productos:</p>`;
-                productosCoincidentes.forEach((producto) => {
-                    mensaje += `<p class="w-full h-full">${producto.nombre} - ${producto.rubro}</p>`;
-                });
-                alerta.innerHTML = mensaje;
+            if (productosFiltrados.length > 0) {
+                mostrarTabla(productosFiltrados);
+                Toastify({
+                    text: "✅ Productos encontrados.",
+                    className: "info",
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }
+                }).showToast();
             } else {
-                alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">No se encontraron productos en el rubro "${rubro}".</p>`;
+                Toastify({
+                    text: "❌ No se encontraron productos con el nombre ingresado.",
+                    className: "info",
+                    style: {
+                        background: "linear-gradient(to right, rgb(255, 95, 109), rgb(255, 195, 113))",
+                    }
+                }).showToast();
             }
         } else {
-            alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Por favor completa el campo "Nombre del rubro"</p>`;
+            Toastify({
+                text: "⚠️ Completa el campo por favor.",
+                className: "info",
+                style: {
+                    background: "linear-gradient(to right, #f1c40f, rgb(255, 195, 113))",
+                }
+            }).showToast();
         }
-
-        setTimeout(() => {
-            alerta.innerHTML = "";
-        }, 3000);
     });
 
-    mostrarTabla(inventario);
+
+    document.querySelector("#limpiarFiltrosProducto").addEventListener("click", () => {
+
+        document.querySelector("#nombre").value = "";
+        mostrarTabla(inventarioStock);
+        Toastify({
+            text: "✅ Filtros limpiados.",
+            className: "info",
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            }
+        }).showToast();
+    });
+    mostrarTabla(inventarioStock);
 });
+
 
 
 incrementarPrecioss.addEventListener("click", () => {
@@ -127,26 +142,36 @@ incrementarPrecioss.addEventListener("click", () => {
 
     formulario.innerHTML = `
         <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Porcentaje de modificación de precio" type="number" id="porcentaje" />
-        <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitIncremento">Modificar Precios</button>`;
+        <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitIncremento">💲 Modificar % Precios</button>`;
 
     document.querySelector("#submitIncremento").addEventListener("click", (event) => {
         event.preventDefault();
 
         let porcentaje = parseFloat(document.querySelector("#porcentaje").value);
         if (!isNaN(porcentaje)) {
-            inventario.forEach((producto) => {
+            inventarioStock.forEach((producto) => {
                 producto.precio += (producto.precio * porcentaje) / 100;
             });
             guardarProductos();
-            mostrarTabla(inventario);
+            mostrarTabla(inventarioStock);
+            Toastify({
+                text: "✅ El precio fue modificado",
+                className: "info",
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                }
+            }).showToast();
         } else {
-            alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Por favor ingresa un porcentaje válido</p>`;
+            Toastify({
+                text: "⚠️ Ingresa un porcentaje valido porfavor.",
+                className: "info",
+                style: {
+                    background: "linear-gradient(to right, #f1c40f, rgb(255, 195, 113))",
+                }
+            }).showToast();
         }
-        setTimeout(() => {
-            alerta.innerHTML = "";
-        }, 3000);
     });
-    mostrarTabla(inventario);
+    mostrarTabla(inventarioStock);
 });
 
 editarProductoss.addEventListener("click", () => {
@@ -154,7 +179,7 @@ editarProductoss.addEventListener("click", () => {
     formulario.innerHTML = `<input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1 md:col-span-2" placeholder="Nombre de producto" type="text" id="nombre" />
     <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Rubro de producto" type="text" id="rubro" />
     <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Precio de producto" type="number" id="precio" />
-    <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitProducto">Editar Producto</button>`;
+    <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitProducto">📝 Editar Producto</button>`;
 
     document.querySelector("#submitProducto").addEventListener("click", (event) => {
         event.preventDefault();
@@ -163,61 +188,144 @@ editarProductoss.addEventListener("click", () => {
         let rubro = document.querySelector("#rubro").value;
         let precio = document.querySelector("#precio").value;
         if (nombre && rubro && precio) {
-            let productoExiste = inventario.some(
+            let productoExiste = inventarioStock.some(
                 (producto) => producto.nombre === nombre
             );
             if (!productoExiste) {
-                alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">${nombre} no existe!</p>`;
+                Toastify({
+                    text: "❌ Producto no existente.",
+                    className: "info",
+                    style: {
+                        background: "linear-gradient(to right, rgb(255, 95, 109), rgb(255, 195, 113))",
+                    }
+                }).showToast();
             } else {
-                let index = inventario.findIndex(
+                let index = inventarioStock.findIndex(
                     (producto) => producto.nombre === nombre
                 );
-                inventario[index].rubro = rubro;
-                inventario[index].precio = parseFloat(precio);
+                inventarioStock[index].rubro = rubro;
+                inventarioStock[index].precio = parseFloat(precio);
                 guardarProductos();
-                mostrarTabla(inventario);
-                alerta.innerHTML = `<p class="w-full h-full bg-green-300 p-4">${nombre} editado con exito!</p>`;
+                mostrarTabla(inventarioStock);
+                Toastify({
+                    text: "✅ Producto editado con exito.",
+                    className: "info",
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }
+                }).showToast();
             }
         } else {
-            alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Por favor completa los campos</p>`;
+            Toastify({
+                text: "⚠️ Completa los campos porfavor.",
+                className: "info",
+                style: {
+                    background: "linear-gradient(to right, #f1c40f, rgb(255, 195, 113))",
+                }
+            }).showToast();
         }
-        setTimeout(() => {
-            alerta.innerHTML = "";
-        }, 3000);
+        mostrarTabla(inventarioStock);
     });
-    mostrarTabla(inventario);
+
+    filtrarRubro.addEventListener("click", () => {
+        let formulario = document.querySelector("#form");
+        formulario.innerHTML = `
+        <input class="p-2 border border-cyan-600 outline-none focus:ring-cyan-600 col-span-1" placeholder="Nombre del rubro" type="text" id="rubro" />
+        <button type="submit" class="p-2 text-center bg-cyan-600 text-white col-start-1 md:col-start-2 hover:bg-cyan-900 self-end" id="submitFiltro">🔍 Filtrar por Rubro</button>
+        <button type="button" class="p-2 text-center bg-gray-600 text-white col-start-1 md:col-start-2 hover:bg-gray-900 self-end" id="limpiarFiltros">🔄️ Limpiar Filtros</button>`;
+
+        document.querySelector("#submitFiltro").addEventListener("click", (event) => {
+            event.preventDefault();
+
+            let rubro = document.querySelector("#rubro").value;
+            if (rubro) {
+                let productosFiltrados = inventarioStock.filter(
+                    (producto) => producto.rubro.includes(rubro)
+                );
+                if (productosFiltrados.length > 0) {
+                    mostrarTabla(productosFiltrados);
+                    Toastify({
+                        text: "✅ Productos filtrados.",
+                        className: "info",
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        }
+                    }).showToast();
+                } else {
+                    Toastify({
+                        text: `❌ No se encontraron productos en el rubro mencionado.`,
+                        className: "info",
+                        style: {
+                            background: "linear-gradient(to right, rgb(255, 95, 109), rgb(255, 195, 113))",
+                        }
+                    }).showToast();
+                }
+            } else {
+                Toastify({
+                    text: "⚠️ Completa el campo por favor.",
+                    className: "info",
+                    style: {
+                        background: "linear-gradient(to right, #f1c40f, rgb(255, 195, 113))",
+                    }
+                }).showToast();
+            }
+        });
+        mostrarTabla(inventarioStock);
+        document.querySelector("#limpiarFiltros").addEventListener("click", () => {
+            document.querySelector("#rubro").value = "";
+            mostrarTabla(inventarioStock);
+            Toastify({
+                text: "✅ Filtros limpiados.",
+                className: "info",
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                }
+            }).showToast();
+        });
+    });
 });
 
-function solicitarDato(tipo, mensaje, sugerencia = "") {
-    let dato;
-    if (tipo == "numero") {
-        do {
-            dato = parseFloat(prompt(mensaje, sugerencia));
-        } while (isNaN(dato) || dato < 0);
-    } else if (tipo == "numeroEntero") {
-        do {
-            dato = parseInt(prompt(mensaje, sugerencia));
-        } while (isNaN(dato) || dato < 0);
-    } else if (tipo == "cadena") {
-        do {
-            dato = prompt(mensaje, sugerencia);
-        } while (dato == "");
-    }
-    return dato;
-}
-function eliminarProducto(id) {
-    let index = inventario.findIndex((producto) => producto.id === id);
-
-    if (index !== -1) {
-        inventario.splice(index, 1);
-        guardarProductos();
-        mostrarTabla(inventario);
-        alerta.innerHTML = `<p class="w-full h-full bg-green-300 p-4">Producto eliminado con éxito!</p>`;
-    } else {
-        alerta.innerHTML = `<p class="w-full h-full bg-red-300 p-4">Producto no encontrado!</p>`;
+    function solicitarDato(tipo, mensaje, sugerencia = "") {
+        let dato;
+        if (tipo == "numero") {
+            do {
+                dato = parseFloat(prompt(mensaje, sugerencia));
+            } while (isNaN(dato) || dato < 0);
+        } else if (tipo == "numeroEntero") {
+            do {
+                dato = parseInt(prompt(mensaje, sugerencia));
+            } while (isNaN(dato) || dato < 0);
+        } else if (tipo == "cadena") {
+            do {
+                dato = prompt(mensaje, sugerencia);
+            } while (dato == "");
+        }
+        return dato;
     }
 
-    setTimeout(() => {
-        alerta.innerHTML = "";
-    }, 3000);
-}
+    function eliminarProducto(id) {
+        id = parseInt(id, 10);
+        let index = inventarioStock.findIndex((producto) => producto.id === id);
+
+        if (index !== -1) {
+            inventarioStock.splice(index, 1);
+            guardarProductos();
+            mostrarTabla(inventarioStock);
+            Toastify({
+                text: "✅ Producto eliminado con éxito.",
+                className: "info",
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                }
+            }).showToast();
+        } else {
+            Toastify({
+                text: "❌ Producto no encontrado.",
+                className: "info",
+                style: {
+                    background: "linear-gradient(to right, rgb(255, 95, 109), rgb(255, 195, 113))",
+                }
+            }).showToast();
+        }
+    }
+
